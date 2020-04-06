@@ -4,7 +4,7 @@ requirements = ["numpy", "pandas"]
 
 setup(
     name="spikey",
-    version="0.0.1a",
+    version="0.0.2",
     description="Electrophysiology analysis",
     install_requires=requirements,
     extras_require={
