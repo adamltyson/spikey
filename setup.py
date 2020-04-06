@@ -1,6 +1,6 @@
 from setuptools import setup, find_namespace_packages
 
-requirements = ["numpy"]
+requirements = ["numpy", "pandas"]
 
 setup(
     name="spikey",
