@@ -1,6 +1,13 @@
 from setuptools import setup, find_namespace_packages
 
-requirements = ["numpy", "pandas", "imlib"]
+requirements = [
+    "numpy",
+    "pandas",
+    "imlib",
+    # needed until pycircstat is updated
+    "scipy <= 1.2.1",
+    "pycircstat",
+]
 
 setup(
     name="spikey",
