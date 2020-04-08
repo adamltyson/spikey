@@ -39,7 +39,7 @@ def radial_spike_histogram_multiple(
     number_of_cells = len(angle_timeseries_list)
     for idx, v in enumerate(range(number_of_cells)):
         hist_weight = spikes_timeseries_list[idx]
-        histogram_bin_center, spikes_per_bin_cell = radial_spike_histogram(
+        spikes_per_bin_cell, histogram_bin_center = radial_spike_histogram(
             angle_timeseries_list[idx],
             hist_weight,
             bin_width,
@@ -72,8 +72,8 @@ def radial_spike_histogram(
     If specified, the relative spike rates will be returned.
     :param normalise: Normalise the resulting histogram
     :param degrees: Use degrees, rather than radians
-    :return: Histogram bin centers (in radians) and the spikes (or spike rate)
-    per radial bin
+    :return: Spikes (or spike rate) per radial bin and histogram bin centers
+    (in radians)
 
     """
     spikes_per_bin, bins = np.histogram(
@@ -86,4 +86,4 @@ def radial_spike_histogram(
         spikes_per_bin = np.divide(spikes_per_bin, bin_occupancy)
     if degrees:
         bin_centers = np.deg2rad(midpoints_of_series(bins))
-    return bin_centers, spikes_per_bin
+    return spikes_per_bin, bin_centers
