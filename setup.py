@@ -11,7 +11,7 @@ requirements = [
 
 setup(
     name="spikey",
-    version="0.0.3",
+    version="0.0.4",
     description="Electrophysiology analysis",
     install_requires=requirements,
     extras_require={
