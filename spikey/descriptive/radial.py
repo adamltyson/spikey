@@ -1,3 +1,4 @@
+import numpy as np
 from math import isclose
 from pycircstat.descriptive import corrcc
 from imlib.array.misc import split_array_half
@@ -11,6 +12,7 @@ def radial_tuning_stability(
     bin_width,
     frames_per_sec,
     degrees=True,
+    nan_correct=False,
 ):
     """
     For a given cell, split the recording into two halves, and a tuning curve
@@ -23,6 +25,7 @@ def radial_tuning_stability(
     :param bin_width: Size of bin used for histogram
     :param frames_per_sec: How many angle values are recorded each second
     :param degrees: Use degrees, rather than radians
+    :param nan_correct: If True, replace nan's in the tuning curve with 0s
     :return:
     """
     assert len(angle_timeseries) == len(spikes_timeseries)
@@ -53,6 +56,10 @@ def radial_tuning_stability(
         len(angle_timeseries) / frames_per_sec,
         abs_tol=0.0001,
     )
+
+    if nan_correct:
+        tuning_a[np.isnan(tuning_a)] = 0
+        tuning_b[np.isnan(tuning_b)] = 0
 
     # Stability of the same time half against itself should be 1
     assert corrcc(tuning_a, tuning_a) == 1
