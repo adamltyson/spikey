@@ -1,5 +1,7 @@
 import numpy as np
 
+import scipy.ndimage.filters as filters
+
 from imlib.radial.misc import radial_bins
 from imlib.array.misc import midpoints_of_series
 
@@ -11,6 +13,7 @@ def radial_spike_histogram_multiple(
     bin_occupancy=None,
     normalise=False,
     degrees=True,
+    smooth_width=None,
 ):
     """
     Calculates a radial spiking histogram for a list of cells. From a list
@@ -29,6 +32,7 @@ def radial_spike_histogram_multiple(
     If specified, the relative spike rates will be returned.
     :param normalise: Normalise the resulting histogram
     :param degrees: Use degrees, rather than radians
+    :param smooth_width: If not None, smooth with a kernel of this size
     :return: List of spikes per radial bin (possibly normalised for occupancy),
     and the bin centers of the histogram used (in radians)
 
@@ -46,6 +50,7 @@ def radial_spike_histogram_multiple(
             bin_occupancy=bin_occupancy,
             normalise=normalise,
             degrees=degrees,
+            smooth_width=smooth_width,
         )
         spikes_per_bin.append(spikes_per_bin_cell)
 
@@ -59,6 +64,7 @@ def radial_spike_histogram(
     bin_occupancy=None,
     normalise=False,
     degrees=True,
+    smooth_width=None,
 ):
     """
     From a timeseries of angles and spikes, calculate a radial spiking
@@ -72,6 +78,7 @@ def radial_spike_histogram(
     If specified, the relative spike rates will be returned.
     :param normalise: Normalise the resulting histogram
     :param degrees: Use degrees, rather than radians
+    :param smooth_width: If not None, smooth with a kernel of this size
     :return: Spikes (or spike rate) per radial bin and histogram bin centers
     (in radians)
 
@@ -82,6 +89,17 @@ def radial_spike_histogram(
         bins=radial_bins(bin_width, degrees=degrees),
         density=normalise,
     )
+
+    if smooth_width is not None:
+        smooth_width_sigma = int(round(smooth_width / bin_width))
+        # if the smooth width is less than the bin size, set it to
+        # the bin size
+        if smooth_width_sigma < 1:
+            smooth_width_sigma = 1
+        spikes_per_bin = filters.gaussian_filter1d(
+            spikes_per_bin, smooth_width_sigma, mode="wrap"
+        )
+
     if bin_occupancy is not None:
         spikes_per_bin = np.divide(spikes_per_bin, bin_occupancy)
     if degrees:

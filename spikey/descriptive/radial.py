@@ -13,6 +13,7 @@ def radial_tuning_stability(
     frames_per_sec,
     degrees=True,
     nan_correct=False,
+    smooth_width=None,
 ):
     """
     For a given cell, split the recording into two halves, and a tuning curve
@@ -26,6 +27,7 @@ def radial_tuning_stability(
     :param frames_per_sec: How many angle values are recorded each second
     :param degrees: Use degrees, rather than radians
     :param nan_correct: If True, replace nan's in the tuning curve with 0s
+    :param smooth_width: If not None, smooth with a kernel of this size
     :return:
     """
     assert len(angle_timeseries) == len(spikes_timeseries)
@@ -41,6 +43,7 @@ def radial_tuning_stability(
         frames_per_sec,
         bin_width=bin_width,
         degrees=degrees,
+        smooth_width=smooth_width,
     )
     tuning_b, angle_bin_occupancy_b = calculate_tuning(
         angle_timeseries_b,
@@ -48,6 +51,7 @@ def radial_tuning_stability(
         frames_per_sec,
         bin_width=bin_width,
         degrees=degrees,
+        smooth_width=smooth_width,
     )
 
     # make sure total occupancy is the same as the length of the timeseries
